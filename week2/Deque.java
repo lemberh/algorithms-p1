@@ -1,8 +1,4 @@
-package week2;/* *****************************************************************************
- *  Name:              Alan Turing
- *  Coursera User ID:  123456
- *  Last modified:     1/1/2019
- **************************************************************************** */
+package week2;
 
 import java.util.Iterator;
 
@@ -62,20 +58,30 @@ public class Deque<Item> implements Iterable<Item> {
     // remove and return the item from the front
     public Item removeFirst(){
 
-        count--
+        count--;
+        //TODO
+        return null;
     }
 
     // remove and return the item from the back
     public Item removeLast(){
 
-        count--
+        count--;
+        //TODO
+        return null;
     }
 
     // return an iterator over items in order from front to back
-    public Iterator<Item> iterator()
+    public Iterator<Item> iterator() {
+        //TODO
+        return null;
+    }
 
     // unit testing (required)
-    public static void main(String[] args);
+    public static void main(String[] args) {
+
+
+    }
 
     private static class Node<Item> {
         private Item value;
