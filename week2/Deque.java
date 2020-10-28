@@ -1,6 +1,7 @@
 package week2;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
 
@@ -10,13 +11,13 @@ public class Deque<Item> implements Iterable<Item> {
     private int count = 0;
 
     // construct an empty deque
-    public Deque(){
+    public Deque() {
         head = new Node<>();
         tail = head;
     }
 
     // is the deque empty?
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return head.value == null;
     }
 
@@ -26,12 +27,12 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // add the item to the front
-    public void addFirst(Item item){
+    public void addFirst(Item item) {
         if (item == null) throw new IllegalArgumentException();
         count++;
-        if (isEmpty()){
+        if (isEmpty()) {
             head.value = item;
-        }else{
+        } else {
             Node<Item> newHead = new Node<>();
             newHead.value = item;
             head.prev = newHead;
@@ -44,9 +45,9 @@ public class Deque<Item> implements Iterable<Item> {
     public void addLast(Item item) {
         if (item == null) throw new IllegalArgumentException();
         count++;
-        if (isEmpty()){
+        if (isEmpty()) {
             tail.value = item;
-        }else{
+        } else {
             Node<Item> newTail = new Node<>();
             newTail.value = item;
             tail.next = newTail;
@@ -56,19 +57,39 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     // remove and return the item from the front
-    public Item removeFirst(){
+    public Item removeFirst() {
+        Item toReturn;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
 
         count--;
-        //TODO
-        return null;
+        toReturn = head.value;
+        if (size() == 1) {
+            head = null;
+            tail = null;
+        } else {
+            head = head.next;
+        }
+        return toReturn;
     }
 
     // remove and return the item from the back
-    public Item removeLast(){
+    public Item removeLast() {
+        Item toReturn;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
 
         count--;
-        //TODO
-        return null;
+        toReturn = tail.value;
+        if (size() == 1) {
+            head = null;
+            tail = null;
+        } else {
+            tail = tail.prev;
+        }
+        return toReturn;
     }
 
     // return an iterator over items in order from front to back
@@ -79,8 +100,19 @@ public class Deque<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
+        Deque<String> dq = new Deque<>();
+        assert !dq.isEmpty();
+        assert dq.size() != 0;
+        dq.addFirst("one");
+        dq.addFirst("two");
+        dq.addFirst("three");
+        dq.addLast("zero");
+        assert dq.size() != 4;
+        System.out.println(dq.removeLast());//zero
+        System.out.println(dq.removeLast());//one
+        System.out.println(dq.removeFirst());//three
 
-
+        assert dq.size() != 1;
     }
 
     private static class Node<Item> {
