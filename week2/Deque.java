@@ -32,7 +32,8 @@ public class Deque<Item> implements Iterable<Item> {
         count++;
         if (isEmpty()) {
             head.value = item;
-        } else {
+        }
+        else {
             Node<Item> newHead = new Node<>();
             newHead.value = item;
             head.prev = newHead;
@@ -47,7 +48,8 @@ public class Deque<Item> implements Iterable<Item> {
         count++;
         if (isEmpty()) {
             tail.value = item;
-        } else {
+        }
+        else {
             Node<Item> newTail = new Node<>();
             newTail.value = item;
             tail.next = newTail;
@@ -68,7 +70,8 @@ public class Deque<Item> implements Iterable<Item> {
         if (size() == 1) {
             head = null;
             tail = null;
-        } else {
+        }
+        else {
             head = head.next;
         }
         return toReturn;
@@ -86,7 +89,8 @@ public class Deque<Item> implements Iterable<Item> {
         if (size() == 1) {
             head = null;
             tail = null;
-        } else {
+        }
+        else {
             tail = tail.prev;
         }
         return toReturn;
@@ -94,8 +98,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // return an iterator over items in order from front to back
     public Iterator<Item> iterator() {
-        //TODO
-        return null;
+        return new DQIterator<>(head);
     }
 
     // unit testing (required)
@@ -107,6 +110,9 @@ public class Deque<Item> implements Iterable<Item> {
         dq.addFirst("two");
         dq.addFirst("three");
         dq.addLast("zero");
+        for (String str : dq) {
+            System.out.println(str);
+        }
         assert dq.size() != 4;
         System.out.println(dq.removeLast());//zero
         System.out.println(dq.removeLast());//one
@@ -119,6 +125,29 @@ public class Deque<Item> implements Iterable<Item> {
         private Item value;
         private Node<Item> next;
         private Node<Item> prev;
+    }
+
+    private static class DQIterator<T> implements Iterator<T> {
+
+        private Node<T> head;
+
+        DQIterator(Node<T> head) {
+            this.head = head;
+        }
+
+        public boolean hasNext() {
+            return head != null;
+        }
+
+        public T next() {
+            if (hasNext()) {
+                T toReturn = head.value;
+                head = head.next;
+                return toReturn;
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
     }
 
 }
