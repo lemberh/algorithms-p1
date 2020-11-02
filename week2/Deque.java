@@ -1,4 +1,4 @@
-package week2;
+// package week2;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -18,7 +18,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // is the deque empty?
     public boolean isEmpty() {
-        return head.value == null;
+        return count == 0;
     }
 
     // return the number of items on the deque
@@ -29,7 +29,6 @@ public class Deque<Item> implements Iterable<Item> {
     // add the item to the front
     public void addFirst(Item item) {
         if (item == null) throw new IllegalArgumentException();
-        count++;
         if (isEmpty()) {
             head.value = item;
         }
@@ -40,12 +39,12 @@ public class Deque<Item> implements Iterable<Item> {
             newHead.next = head;
             head = newHead;
         }
+        count++;
     }
 
     // add the item to the back
     public void addLast(Item item) {
         if (item == null) throw new IllegalArgumentException();
-        count++;
         if (isEmpty()) {
             tail.value = item;
         }
@@ -56,6 +55,7 @@ public class Deque<Item> implements Iterable<Item> {
             newTail.prev = tail;
             tail = newTail;
         }
+        count++;
     }
 
     // remove and return the item from the front
@@ -67,12 +67,12 @@ public class Deque<Item> implements Iterable<Item> {
 
         count--;
         toReturn = head.value;
-        if (size() == 1) {
-            head = null;
-            tail = null;
+        if (isEmpty()) {
+            head.value = null;
         }
         else {
             head = head.next;
+            head.prev = null;
         }
         return toReturn;
     }
@@ -86,12 +86,12 @@ public class Deque<Item> implements Iterable<Item> {
 
         count--;
         toReturn = tail.value;
-        if (size() == 1) {
-            head = null;
-            tail = null;
+        if (isEmpty()) {
+            head.value = null;
         }
         else {
             tail = tail.prev;
+            tail.next = null;
         }
         return toReturn;
     }
@@ -114,11 +114,45 @@ public class Deque<Item> implements Iterable<Item> {
             System.out.println(str);
         }
         assert dq.size() != 4;
-        System.out.println(dq.removeLast());//zero
-        System.out.println(dq.removeLast());//one
-        System.out.println(dq.removeFirst());//three
-
+        System.out.println(dq.removeLast()); // zero
+        System.out.println(dq.removeLast()); // one
+        System.out.println(dq.removeFirst()); // three
         assert dq.size() != 1;
+        System.out.println(dq.removeLast()); // three
+        assert !dq.isEmpty();
+
+        dq.addFirst("one");
+        dq.removeFirst();
+        dq.addFirst("one");
+
+        Deque<Integer> deque = new Deque<>();
+        deque.addFirst(2);
+        System.out.println(deque.removeLast());
+
+        deque = new Deque<>();
+        deque.addFirst(1);
+        deque.addFirst(2);
+        System.out.println(deque.removeLast());
+
+        deque = new Deque<Integer>();
+        deque.addFirst(1);
+        for (Integer i : deque) {
+            System.out.println(i);
+        }
+
+        deque = new Deque<Integer>();
+        for (Integer i : deque) {
+            System.out.println(i);
+        }
+
+        deque = new Deque<Integer>();
+        deque.addFirst(1);
+        deque.addFirst(2);
+        deque.removeLast();
+        deque.removeLast();
+        for (Integer i : deque) {
+            System.out.println(i);
+        }
     }
 
     private static class Node<Item> {
@@ -136,7 +170,7 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         public boolean hasNext() {
-            return head != null;
+            return head != null && head.value != null;
         }
 
         public T next() {
@@ -144,7 +178,8 @@ public class Deque<Item> implements Iterable<Item> {
                 T toReturn = head.value;
                 head = head.next;
                 return toReturn;
-            } else {
+            }
+            else {
                 throw new NoSuchElementException();
             }
         }

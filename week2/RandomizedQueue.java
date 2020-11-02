@@ -4,21 +4,21 @@
  *  Last modified:     1/1/2019
  **************************************************************************** */
 
-package week2;
+// package week2;
 
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private int count = 0;
-    private Object[] queue;
+    private Item[] queue;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
-        queue = new Object[8];
+        queue = (Item[]) new Object[8];
     }
 
     // is the randomized queue empty?
@@ -33,6 +33,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // add the item
     public void enqueue(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException();
+        }
         // System.out.println(count);
         if (queue.length <= count) {
             upscale();
@@ -43,39 +46,48 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // remove and return a random item
     public Item dequeue() {
-        int index;
-        Object toReturn;
-        do {
-            index = StdRandom.uniform(0, count);
-            toReturn = queue[index];
-        } while (toReturn == null);
+        if (count == 0) {
+            throw new NoSuchElementException();
+        }
+        int index = StdRandom.uniform(0, count);
+        Item toReturn = queue[index];
 
-        queue[index] = null;
+        int lastTemIndex = count - 1;
+        if (index != lastTemIndex) {
+            queue[index] = queue[lastTemIndex];
+            queue[lastTemIndex] = null;
+        } else {
+            queue[index] = null;
+        }
         count--;
 
         if (count > 4 && count <= queue.length / 4) {
             downscale();
         }
 
-        return (Item) toReturn;
+        return toReturn;
     }
 
     // return a random item (but do not remove it)
     public Item sample() {
+        if (count == 0) {
+            throw new NoSuchElementException();
+        }
         int index = StdRandom.uniform(0, count);
-        return (Item) queue[index];
+        Item item = queue[index];
+        return item;
     }
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
-        return new RQIterator(queue, count);
+        return new RQIterator<Item>(queue, count);
     }
 
     private void upscale() {
         // System.out.println(count);
         int newSize = queue.length * 2;
-        StdOut.println("olsSize:" + queue.length + "  new size:" + newSize);
-        Object[] newQ = new Object[newSize];
+        // StdOut.println("olsSize:" + queue.length + "  new size:" + newSize);
+        Item[] newQ = (Item[]) new Object[newSize];
         // copy data to new upscaled array
         for (int i = 0; i < queue.length; i++) {
             newQ[i] = queue[i];
@@ -85,11 +97,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private void downscale() {
         int newSize = queue.length / 2;
-        StdOut.println("olsSize:" + queue.length + "  new size:" + newSize);
-        Object[] newQ = new Object[newSize];
+        // StdOut.println("olsSize:" + queue.length + "  new size:" + newSize);
+        Item[] newQ = (Item[]) new Object[newSize];
         // copy data to new upscaled array
-        for (int i = 0, j = 0; i < queue.length; i++) {
-            Object item = queue[i];
+        int j = 0;
+        for (int i = 0; i < queue.length; i++) {
+            Item item = queue[i];
             if (item != null) {
                 newQ[j++] = item;
             }
@@ -99,17 +112,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private static class RQIterator<T> implements Iterator<T> {
 
-        private Object[] outOrder;
+        private T[] outOrder;
         private int index = 0;
 
-        RQIterator(Object[] queue, int count) {
-            outOrder = new Object[count];
+        RQIterator(T[] queue, int count) {
+            outOrder = (T[]) new Object[count];
 
             for (int i = 0; i < queue.length; i++) {
-                Object item = queue[i];
+                T item = queue[i];
                 if (item != null) {
                     int j;
-                    Object check;
+                    T check;
                     do {
                         j = StdRandom.uniform(0, outOrder.length);
                         check = outOrder[j];
@@ -124,7 +137,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public T next() {
-            return (T) outOrder[index++];
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return outOrder[index++];
         }
     }
 
